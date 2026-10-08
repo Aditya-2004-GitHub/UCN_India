@@ -51,7 +51,118 @@ Route::get('/recharge', function () {
 
 
 Route::get('/', function () {
-    return view('frontend.index');
+    // 1. Fetch IPTV plans for home horizontal section (Screenshot 1)
+    $iptvPlans = Cache::remember('ucnsmart_iptv_plans', 300, function () {
+        try {
+            $response = Http::timeout(5)->get('https://ucnsmart.com/api/plans');
+            if ($response->successful()) {
+                $json = $response->json();
+                if (!empty($json['data']) && is_array($json['data'])) {
+                    return $json['data'];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning('Failed to fetch IPTV plans from ucnsmart.com API: ' . $e->getMessage());
+        }
+        return null;
+    });
+
+    // 2. Fetch plan 1 from https://ucnsmart.com/api/plans/1 for broadband grid (Screenshot 2)
+    $iptvPlan1 = Cache::remember('ucnsmart_iptv_plan_1', 300, function () use ($iptvPlans) {
+        try {
+            $response = Http::timeout(5)->get('https://ucnsmart.com/api/plans/1');
+            if ($response->successful()) {
+                $json = $response->json();
+                if (!empty($json['data']) && is_array($json['data'])) {
+                    return $json['data'];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning('Failed to fetch plan 1 from ucnsmart.com API: ' . $e->getMessage());
+        }
+        return !empty($iptvPlans[0]) ? $iptvPlans[0] : null;
+    });
+
+    if (empty($iptvPlans)) {
+        $iptvPlans = [
+            [
+                'id' => 1,
+                'slug' => 'tier-50',
+                'speed' => '50',
+                'speed_unit' => 'Mbps',
+                'speed_display' => '50 Mbps',
+                'base_name' => '50 Mbps Wi-Fi + Satellite Channels',
+                'bundle_name' => '50 Mbps Wi-Fi + Satellite Channels + OTT',
+                'pricing' => [
+                    'base_monthly' => 636,
+                    'addon_monthly' => 169,
+                    'bundle_monthly' => 805,
+                    'formatted_base' => '₹636/mo',
+                    'formatted_addon' => '₹169/mo',
+                    'formatted_bundle' => '₹805/mo'
+                ],
+                'badges' => [
+                    'base' => 'BASE PLAN',
+                    'bundle' => 'MOST POPULAR • BEST VALUE'
+                ],
+                'features' => [
+                    '50 Mbps Unlimited High-Speed Fiber',
+                    '400+ Live Satellite Channels in HD',
+                    'Free Dual-Band Wi-Fi Router & Setup'
+                ],
+                'otts' => [
+                    'count' => 15,
+                    'apps' => [
+                        ['filename' => 'netflix.webp', 'icon_url' => 'https://ucnsmart.com/OTTs logo/netflix.webp'],
+                        ['filename' => 'jiohotstar.webp', 'icon_url' => 'https://ucnsmart.com/OTTs logo/jiohotstar.webp'],
+                        ['filename' => 'z5.webp', 'icon_url' => 'https://ucnsmart.com/OTTs logo/z5.webp'],
+                        ['filename' => 'sonylive.webp', 'icon_url' => 'https://ucnsmart.com/OTTs logo/sonylive.webp'],
+                    ]
+                ]
+            ],
+            [
+                'id' => 2,
+                'slug' => 'tier-100',
+                'speed' => '100',
+                'speed_unit' => 'Mbps',
+                'speed_display' => '100 Mbps',
+                'base_name' => '100 Mbps Wi-Fi + Satellite Channels',
+                'bundle_name' => '100 Mbps Wi-Fi + Satellite Channels + OTT',
+                'pricing' => [
+                    'base_monthly' => 763,
+                    'addon_monthly' => 169,
+                    'bundle_monthly' => 932,
+                    'formatted_base' => '₹763/mo',
+                    'formatted_addon' => '₹169/mo',
+                    'formatted_bundle' => '₹932/mo'
+                ],
+                'badges' => [
+                    'base' => 'PRO FIBER',
+                    'bundle' => 'ULTIMATE ENTERTAINMENT'
+                ],
+                'features' => [
+                    '100 Mbps Ultra-Fast Fiber Internet',
+                    '400+ Live Satellite Channels in HD',
+                    '4K Ultra HD & Multi-Device Streaming'
+                ],
+                'otts' => [
+                    'count' => 14,
+                    'apps' => [
+                        ['filename' => 'netflix.webp', 'icon_url' => 'https://ucnsmart.com/OTTs logo/netflix.webp'],
+                        ['filename' => 'jiohotstar.webp', 'icon_url' => 'https://ucnsmart.com/OTTs logo/jiohotstar.webp'],
+                        ['filename' => 'z5.webp', 'icon_url' => 'https://ucnsmart.com/OTTs logo/z5.webp'],
+                        ['filename' => 'sonylive.webp', 'icon_url' => 'https://ucnsmart.com/OTTs logo/sonylive.webp'],
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    if (empty($iptvPlan1)) {
+        $iptvPlan1 = $iptvPlans[0];
+    }
+
+    return view('frontend.index', compact('iptvPlans', 'iptvPlan1'));
 });
 
 Route::get('/about', function () {

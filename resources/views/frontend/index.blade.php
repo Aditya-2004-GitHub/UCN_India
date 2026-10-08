@@ -438,187 +438,128 @@
                 </div>
 
                 <div class="home-horizontal-plans-wrapper">
+                    @php
+                        $iptvPlansList = $iptvPlans ?? [];
+                    @endphp
+                    @foreach($iptvPlansList as $index => $plan)
+                        @php
+                            $slug = $plan['slug'] ?? ('tier-' . ($plan['speed'] ?? ($index + 1)));
+                            $speedDisplay = $plan['speed_display'] ?? (($plan['speed'] ?? '') . ' ' . ($plan['speed_unit'] ?? 'Mbps'));
+                            $isPopular = ($index === 1) || (isset($plan['badges']['bundle']) && str_contains(strtoupper($plan['badges']['bundle']), 'POPULAR'));
+                            $priceVal = $isPopular ? ($plan['pricing']['bundle_monthly'] ?? 932) : ($plan['pricing']['base_monthly'] ?? 636);
+                            $badgeText = $isPopular ? ($plan['badges']['bundle'] ?? 'MOST POPULAR • BEST VALUE') : ($plan['badges']['base'] ?? 'BASE PLAN');
+                            
+                            $priceTaxNote = $isPopular ? 'All OTTs & Channels Included (+ GST)' : '+ GST Applicable';
+                            $fiberPillText = $isPopular ? '4K Ultra HD Fiber Stream' : 'Unlimited High-Speed Fiber';
+                            $fiberPillIcon = $isPopular ? 'fa-tv' : 'fa-bolt';
 
-                    <!-- PLAN 1: 50 Mbps Horizontal Card -->
-                    <a href="https://ucnsmart.com" target="_blank" rel="noopener noreferrer" class="home-horizontal-plan-card" id="home-card-tier-50">
-                        <div class="h-card-badge-wrap">
-                            <span class="tier-badge badge-base">BASE PLAN</span>
-                        </div>
+                            $cardTitle = $isPopular 
+                                ? ($plan['bundle_name'] ?? ($speedDisplay . ' Wi-Fi + 400+ Live Channels + 25+ OTT Apps')) 
+                                : ($plan['base_name'] ?? ($speedDisplay . ' Wi-Fi + 400+ Live Satellite Channels'));
+                            
+                            $cardDesc = $isPopular
+                                ? 'Ultra-fast fiber designed for bufferless 4K streaming, multi-device homes & complete OTT binge-watching.'
+                                : 'High-speed unlimited fiber broadband paired with 400+ live satellite TV channels for complete family entertainment.';
 
-                        <!-- Col 1: Pricing & Speed -->
-                        <div class="h-card-col-pricing">
-                            <div class="h-tier-speed-pill">
-                                <i class="fa-solid fa-gauge-high"></i>
-                                <span>50 Mbps</span>
-                            </div>
-                            <div class="h-tier-price-box">
-                                <span class="h-tier-curr">₹</span>
-                                <span class="h-tier-val">636</span>
-                                <span class="h-tier-cycle">/-month</span>
-                            </div>
-                            <div class="h-price-tax-note">+ GST Applicable</div>
-                            <div class="h-fiber-type-pill">
-                                <i class="fa-solid fa-bolt"></i> Unlimited High-Speed Fiber
-                            </div>
-                        </div>
+                            $ottApps = $plan['otts']['apps'] ?? [];
+                            $ottCount = $plan['otts']['count'] ?? (count($ottApps) > 0 ? count($ottApps) : 25);
+                            $previewOtts = array_slice($ottApps, 0, 4);
+                            $ottLabel = $isPopular 
+                                ? 'Includes Netflix, Hotstar, ZEE5, Sony LIV & ' . $ottCount . '+ Apps' 
+                                : 'Supports ' . $ottCount . '+ OTT Apps on UCN Smart';
 
-                        <!-- Col 2: Content & Key Highlights -->
-                        <div class="h-card-col-content">
-                            <div class="h-card-title-group">
-                                <h3 class="h-card-title">50 Mbps Wi-Fi + 400+ Live Satellite Channels</h3>
-                                <p class="h-card-desc">High-speed unlimited fiber broadband paired with 400+ live satellite TV channels for complete family entertainment.</p>
+                            // 4 Key highlights for horizontal card inclusions
+                            $inclusions = $isPopular ? [
+                                '<strong>400+</strong> Live Channels in HD',
+                                '<strong>' . $ottCount . '+ OTT Apps</strong> Included (Hotstar, ZEE5)',
+                                '<strong>4K Ultra HD</strong> Multi-Screen Streaming',
+                                '<strong>Free</strong> Dual-Band Wi-Fi Router'
+                            ] : [
+                                '<strong>400+</strong> Live Channels in HD',
+                                '<strong>100% Boxless</strong> Smart TV App',
+                                '<strong>Free</strong> Dual-Band Wi-Fi Router',
+                                '<strong>' . $ottCount . '+ OTT Apps</strong> Add-on Available'
+                            ];
+                        @endphp
+
+                        <a href="https://ucnsmart.com" target="_blank" rel="noopener noreferrer" class="home-horizontal-plan-card {{ $isPopular ? 'popular-card' : '' }}" id="home-card-{{ $slug }}">
+                            <div class="h-card-badge-wrap">
+                                <span class="tier-badge {{ $isPopular ? 'badge-popular' : 'badge-base' }}">
+                                    @if($isPopular)<i class="fa-solid fa-star me-1"></i>@endif {{ $badgeText }}
+                                </span>
                             </div>
 
-                            <!-- Inclusions Grid (Only Limited & Important Features) -->
-                            <div class="h-inclusions-grid">
-                                <div class="h-inc-item">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                    <span><strong>400+</strong> Live Channels in HD</span>
+                            <!-- Col 1: Pricing & Speed -->
+                            <div class="h-card-col-pricing">
+                                <div class="h-tier-speed-pill {{ $isPopular ? 'pill-popular' : '' }}">
+                                    <i class="fa-solid fa-gauge-high"></i>
+                                    <span>{{ $speedDisplay }}</span>
                                 </div>
-                                <div class="h-inc-item">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                    <span><strong>100% Boxless</strong> Smart TV App</span>
+                                <div class="h-tier-price-box">
+                                    <span class="h-tier-curr">₹</span>
+                                    <span class="h-tier-val">{{ $priceVal }}</span>
+                                    <span class="h-tier-cycle">/-month</span>
                                 </div>
-                                <div class="h-inc-item">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                    <span><strong>Free</strong> Dual-Band Wi-Fi Router</span>
-                                </div>
-                                <div class="h-inc-item">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                    <span><strong>25+ OTT Apps</strong> Add-on Available</span>
-                                </div>
-                            </div>
-
-                            <!-- Clean OTT Showcase Bar -->
-                            <div class="h-ott-simple-bar">
-                                <div class="plan-ott-circles-stack active-otts">
-                                    <div class="ott-circle-avatar" title="Netflix">
-                                        <img src="{{ asset('asset/images/iptv/otts/netflix.png') }}" alt="Netflix" loading="lazy">
-                                    </div>
-                                    <div class="ott-circle-avatar" title="JioHotstar">
-                                        <img src="{{ asset('asset/images/iptv/otts/jiohotstar.png') }}" alt="JioHotstar" loading="lazy">
-                                    </div>
-                                    <div class="ott-circle-avatar" title="ZEE5">
-                                        <img src="{{ asset('asset/images/iptv/otts/z5.webp') }}" alt="ZEE5" loading="lazy">
-                                    </div>
-                                    <div class="ott-circle-avatar" title="Sony LIV">
-                                        <img src="{{ asset('asset/images/iptv/otts/sonylive.webp') }}" alt="Sony LIV" loading="lazy">
-                                    </div>
-                                    <div class="ott-circle-avatar plus-circle" title="25+ OTT Apps">
-                                        <span>25+</span>
-                                    </div>
-                                </div>
-                                <span class="h-ott-simple-label">Supports 25+ OTT Apps on UCN Smart</span>
-                            </div>
-                        </div>
-
-                        <!-- Col 3: Actions -->
-                        <div class="h-card-col-actions">
-                            <div class="h-tier-cta-btn">
-                                <span>Get Connection</span>
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                            </div>
-
-                            <span class="h-redirect-hint">Redirects to <strong>ucnsmart.com</strong></span>
-
-                            <div class="h-trust-features">
-                                <span><i class="fa-solid fa-shield-check"></i> Zero Box Deposit</span>
-                                <span><i class="fa-solid fa-bolt"></i> Instant Setup</span>
-                            </div>
-                        </div>
-                    </a>
-
-                    <!-- PLAN 2: 100 Mbps Horizontal Card (Featured Popular) -->
-                    <a href="https://ucnsmart.com" target="_blank" rel="noopener noreferrer" class="home-horizontal-plan-card popular-card" id="home-card-tier-100">
-                        <div class="h-card-badge-wrap">
-                            <span class="tier-badge badge-popular">
-                                <i class="fa-solid fa-star me-1"></i> MOST POPULAR • BEST VALUE
-                            </span>
-                        </div>
-
-                        <!-- Col 1: Pricing & Speed -->
-                        <div class="h-card-col-pricing">
-                            <div class="h-tier-speed-pill pill-popular">
-                                <i class="fa-solid fa-gauge-high"></i>
-                                <span>100 Mbps</span>
-                            </div>
-                            <div class="h-tier-price-box">
-                                <span class="h-tier-curr">₹</span>
-                                <span class="h-tier-val">932</span>
-                                <span class="h-tier-cycle">/-month</span>
-                            </div>
-                            <div class="h-price-tax-note">All OTTs & Channels Included (+ GST)</div>
-                            <div class="h-fiber-type-pill pill-popular-accent">
-                                <i class="fa-solid fa-tv"></i> 4K Ultra HD Fiber Stream
-                            </div>
-                        </div>
-
-                        <!-- Col 2: Content & Key Highlights -->
-                        <div class="h-card-col-content">
-                            <div class="h-card-title-group">
-                                <h3 class="h-card-title">100 Mbps Wi-Fi + 400+ Live Channels + 25+ OTT Apps</h3>
-                                <p class="h-card-desc">Ultra-fast fiber designed for bufferless 4K streaming, multi-device homes & complete OTT binge-watching.</p>
-                            </div>
-
-                            <!-- Inclusions Grid (Only Limited & Important Features) -->
-                            <div class="h-inclusions-grid">
-                                <div class="h-inc-item">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                    <span><strong>400+</strong> Live Channels in HD</span>
-                                </div>
-                                <div class="h-inc-item">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                    <span><strong>25+ OTT Apps</strong> Included (Hotstar, ZEE5)</span>
-                                </div>
-                                <div class="h-inc-item">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                    <span><strong>4K Ultra HD</strong> Multi-Screen Streaming</span>
-                                </div>
-                                <div class="h-inc-item">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                    <span><strong>Free</strong> Dual-Band Wi-Fi Router</span>
+                                <div class="h-price-tax-note">{{ $priceTaxNote }}</div>
+                                <div class="h-fiber-type-pill {{ $isPopular ? 'pill-popular-accent' : '' }}">
+                                    <i class="fa-solid {{ $fiberPillIcon }}"></i> {{ $fiberPillText }}
                                 </div>
                             </div>
 
-                            <!-- Clean OTT Showcase Bar -->
-                            <div class="h-ott-simple-bar">
-                                <div class="plan-ott-circles-stack active-otts">
-                                    <div class="ott-circle-avatar" title="Netflix">
-                                        <img src="{{ asset('asset/images/iptv/otts/netflix.png') }}" alt="Netflix" loading="lazy">
-                                    </div>
-                                    <div class="ott-circle-avatar" title="JioHotstar">
-                                        <img src="{{ asset('asset/images/iptv/otts/jiohotstar.png') }}" alt="JioHotstar" loading="lazy">
-                                    </div>
-                                    <div class="ott-circle-avatar" title="ZEE5">
-                                        <img src="{{ asset('asset/images/iptv/otts/z5.webp') }}" alt="ZEE5" loading="lazy">
-                                    </div>
-                                    <div class="ott-circle-avatar" title="Sony LIV">
-                                        <img src="{{ asset('asset/images/iptv/otts/sonylive.webp') }}" alt="Sony LIV" loading="lazy">
-                                    </div>
-                                    <div class="ott-circle-avatar plus-circle" title="25+ OTT Apps">
-                                        <span>25+</span>
-                                    </div>
+                            <!-- Col 2: Content & Key Highlights -->
+                            <div class="h-card-col-content">
+                                <div class="h-card-title-group">
+                                    <h3 class="h-card-title">{{ $cardTitle }}</h3>
+                                    <p class="h-card-desc">{{ $cardDesc }}</p>
                                 </div>
-                                <span class="h-ott-simple-label">Includes Netflix, Hotstar, ZEE5, Sony LIV & 25+ Apps</span>
+
+                                <!-- Inclusions Grid (Only Limited & Important Features) -->
+                                <div class="h-inclusions-grid">
+                                    @foreach($inclusions as $inc)
+                                        <div class="h-inc-item">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                            <span>{!! $inc !!}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <!-- Clean OTT Showcase Bar -->
+                                <div class="h-ott-simple-bar">
+                                    <div class="plan-ott-circles-stack active-otts">
+                                        @foreach($previewOtts as $app)
+                                            @php
+                                                $appName = pathinfo($app['filename'] ?? '', PATHINFO_FILENAME);
+                                                $fallbackLocal = asset('asset/images/iptv/otts/' . ($app['filename'] ?? 'netflix.webp'));
+                                                $iconUrl = !empty($app['icon_url']) ? $app['icon_url'] : $fallbackLocal;
+                                            @endphp
+                                            <div class="ott-circle-avatar" title="{{ ucfirst($appName) }}">
+                                                <img src="{{ $iconUrl }}" alt="{{ $appName }}" loading="lazy" onerror="this.src='{{ $fallbackLocal }}'">
+                                            </div>
+                                        @endforeach
+                                        <div class="ott-circle-avatar plus-circle" title="{{ $ottCount }}+ OTT Apps">
+                                            <span>{{ $ottCount }}+</span>
+                                        </div>
+                                    </div>
+                                    <span class="h-ott-simple-label">{{ $ottLabel }}</span>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Col 3: Actions -->
-                        <div class="h-card-col-actions">
-                            <div class="h-tier-cta-btn btn-bundle-active">
-                                <span>Get Connection</span>
-                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            <!-- Col 3: Actions -->
+                            <div class="h-card-col-actions">
+                                <div class="h-tier-cta-btn {{ $isPopular ? 'btn-bundle-active' : '' }}">
+                                    <span>Get Connection</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </div>
+
+                                <span class="h-redirect-hint">Redirects to <strong>ucnsmart.com</strong></span>
+
+                                <div class="h-trust-features">
+                                    <span><i class="fa-solid fa-shield-check"></i> Zero Box Deposit</span>
+                                    <span><i class="fa-solid fa-bolt"></i> Instant Setup</span>
+                                </div>
                             </div>
-
-                            <span class="h-redirect-hint">Redirects to <strong>ucnsmart.com</strong></span>
-
-                            <div class="h-trust-features">
-                                <span><i class="fa-solid fa-shield-check"></i> Zero Box Deposit</span>
-                                <span><i class="fa-solid fa-bolt"></i> Instant Setup</span>
-                            </div>
-                        </div>
-                    </a>
-
+                        </a>
+                    @endforeach
                 </div>
 
                 <!-- Footer Quick Banner -->
@@ -684,16 +625,21 @@
                     <img src="{{ asset('asset/images/home/elements/6.png') }}" alt="Shape Right Wave"
                         class="broadband-elem-right-wave">
 
-                    <!-- 1st Index: UCN Smart IPTV Plan -->
+                    <!-- 1st Index: UCN Smart IPTV Plan (Dynamic from https://ucnsmart.com/api/plans/1) -->
+                    @php
+                        $p1Speed = $iptvPlan1['speed_display'] ?? (($iptvPlan1['speed'] ?? '50') . ' Mbps');
+                        $p1Price = $iptvPlan1['pricing']['base_monthly'] ?? 636;
+                        $p1OttCount = $iptvPlan1['otts']['count'] ?? 25;
+                    @endphp
                     <div class="plan-card iptv-featured-card">
                         <span class="gov-blinking-new"><span class="blink-text">NEW</span></span>
                         <span class="plan-iptv-badge">UCN SMART IPTV</span>
-                        <h3><span class="text-orange">50 Mbps</span></h3>
-                        <p class="plan-desc">400+ Satellite Channels & 25+ OTT Apps included.</p>
+                        <h3><span class="text-orange">{{ $p1Speed }}</span></h3>
+                        <p class="plan-desc">400+ Satellite Channels & {{ $p1OttCount }}+ OTT Apps included.</p>
                         <div class="plan-card-footer">
-                            <div class="plan-price"><span class="price-prefix">Starting at</span>₹636<span>/-month</span>
+                            <div class="plan-price"><span class="price-prefix">Starting at</span>₹{{ $p1Price }}<span>/-month</span>
                             </div>
-                            <a href="http://ucnsmartv2.iceico.co.in/#plans" target="_blank" rel="noopener noreferrer"
+                            <a href="https://ucnsmart.com" target="_blank" rel="noopener noreferrer"
                                 class="plan-arrow-btn orange-btn" title="View UCN Smart IPTV Plans"><i
                                     class="fa-solid fa-arrow-right"></i></a>
                         </div>
