@@ -51,11 +51,11 @@
                         $badgeBase = $plan['badges']['base'] ?? 'BASE PLAN';
                         $badgeBundle = $plan['badges']['bundle'] ?? 'MOST POPULAR • BEST VALUE';
                         
-                        // By default, second tier or tier with popular badge starts with OTT active
-                        $isPopular = ($index === 1) || (isset($plan['badges']['bundle']) && str_contains(strtoupper($plan['badges']['bundle']), 'POPULAR'));
-                        $hasOtt = $isPopular;
-                        $currentPrice = $hasOtt ? $priceBundle : $priceBase;
-                        $currentTitle = $hasOtt ? $bundleName : $baseName;
+                        // By default, keep all OTT addons unselected as requested
+                        $isPopular = ($index === 1);
+                        $hasOtt = false;
+                        $currentPrice = $priceBase;
+                        $currentTitle = $baseName;
                         
                         $ottApps = $plan['otts']['apps'] ?? [];
                         $ottCount = $plan['otts']['count'] ?? (count($ottApps) > 0 ? count($ottApps) : 25);
@@ -241,7 +241,7 @@
                 bundleName: {!! json_encode($bundleName) !!},
                 badgeBase: {!! json_encode($badgeBase) !!},
                 badgeBundle: {!! json_encode($badgeBundle) !!},
-                hasOtt: {{ $isPopular ? 'true' : 'false' }}
+                hasOtt: false
             },
         @endforeach
     };
