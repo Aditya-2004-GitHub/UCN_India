@@ -39,201 +39,161 @@
 
             <!-- 2-Column Centered Plans Grid -->
             <div class="plans-grid-iptv" id="iptvPlansContainer">
-
-                <!-- PLAN 1: 50 Mbps Tier -->
-                <div class="smart-plan-card" id="card-tier-50">
-                    <div class="tier-card-badge-wrap">
-                        <span class="tier-badge badge-base" id="badge-tier-50">BASE PLAN</span>
-                    </div>
-
-                    <div class="tier-card-header">
-                        <div class="tier-speed-pill">
-                            <i class="fa-solid fa-gauge-high"></i>
-                            <span>50 Mbps</span>
-                        </div>
-                        <div class="tier-price-box">
-                            <span class="tier-price-curr">₹</span>
-                            <span class="tier-price-val" id="price-val-tier-50">636</span>
-                            <span class="tier-price-cycle">/-month</span>
-                        </div>
-                    </div>
-
-                    <h3 class="tier-plan-title" id="title-tier-50">50 Mbps Wi-Fi + Satellite Channels</h3>
-                    <p class="plan-desc">Unlimited high-speed fiber paired with live satellite entertainment for everyday family enjoyment.</p>
-
-                    <!-- Base Inclusions -->
-                    <div class="tier-base-inclusions">
-                        <div class="inclusions-heading">
-                            <i class="fa-solid fa-circle-check"></i>
-                            <span>BASE PLAN INCLUDES:</span>
-                        </div>
-                        <ul class="inclusions-list">
-                            <li><i class="fa-solid fa-check"></i> <span>50 Mbps Unlimited High-Speed Fiber</span></li>
-                            <li><i class="fa-solid fa-check"></i> <span>400+ Live Satellite Channels in HD</span></li>
-                            <li><i class="fa-solid fa-check"></i> <span>Free Dual-Band Wi-Fi Router & Setup</span></li>
-                            <li><i class="fa-solid fa-check"></i> <span>100% Boxless TV (No Set-Top Box Needed)</span></li>
-                            <li><i class="fa-solid fa-check"></i> <span>1 Smart TV + Mobile App Access</span></li>
-                        </ul>
-                    </div>
-
-                    <!-- Interactive OTT Add-on Box -->
-                    <div class="tier-ott-addon-box" 
-                         id="addon-box-tier-50" 
-                         onclick="togglePlanTier('tier-50')"
-                         role="button"
-                         tabindex="0"
-                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();togglePlanTier('tier-50');}"
-                         aria-label="Add 25+ Premium OTT Apps for ₹169 per month">
+                @foreach($plans as $index => $plan)
+                    @php
+                        $slug = $plan['slug'] ?? ('tier-' . ($plan['speed'] ?? ($index + 1)));
+                        $speedDisplay = $plan['speed_display'] ?? (($plan['speed'] ?? '') . ' ' . ($plan['speed_unit'] ?? 'Mbps'));
+                        $priceBase = (int)($plan['pricing']['base_monthly'] ?? 0);
+                        $priceAddon = (int)($plan['pricing']['addon_monthly'] ?? 169);
+                        $priceBundle = (int)($plan['pricing']['bundle_monthly'] ?? ($priceBase + $priceAddon));
+                        $baseName = $plan['base_name'] ?? ($speedDisplay . ' Wi-Fi + Satellite Channels');
+                        $bundleName = $plan['bundle_name'] ?? ($speedDisplay . ' Wi-Fi + Satellite Channels + OTT');
+                        $badgeBase = $plan['badges']['base'] ?? 'BASE PLAN';
+                        $badgeBundle = $plan['badges']['bundle'] ?? 'MOST POPULAR • BEST VALUE';
                         
-                        <div class="addon-header-row">
-                            <div class="addon-title-group">
-                                <div class="addon-checkbox-custom" id="addon-check-tier-50">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                                <div class="addon-title-text">
-                                    <span class="addon-main-title">Add 25+ Premium OTT Apps</span>
-                                    <span class="addon-subtitle">Netflix, Hotstar, ZEE5, Sony LIV & more</span>
-                                </div>
-                            </div>
-                            <div class="addon-price-badge" id="addon-badge-tier-50">+₹169/mo</div>
-                        </div>
-
-                        <div class="addon-ott-preview">
-                            <div class="plan-ott-circles-stack" id="ott-circles-tier-50">
-                                <div class="ott-circle-avatar" title="Netflix">
-                                    <img src="{{ asset('asset/images/iptv/otts/netflix.png') }}" alt="Netflix" loading="lazy">
-                                </div>
-                                <div class="ott-circle-avatar" title="JioHotstar">
-                                    <img src="{{ asset('asset/images/iptv/otts/jiohotstar.png') }}" alt="JioHotstar" loading="lazy">
-                                </div>
-                                <div class="ott-circle-avatar" title="ZEE5">
-                                    <img src="{{ asset('asset/images/iptv/otts/z5.webp') }}" alt="ZEE5" loading="lazy">
-                                </div>
-                                <div class="ott-circle-avatar" title="Sony LIV">
-                                    <img src="{{ asset('asset/images/iptv/otts/sonylive.webp') }}" alt="Sony LIV" loading="lazy">
-                                </div>
-                                <div class="ott-circle-avatar plus-circle" title="25+ OTT Apps">
-                                    <span>25+</span>
-                                </div>
-                            </div>
-                            <div class="addon-status-text" id="addon-status-tier-50">
-                                Tap to include 25+ OTTs for only ₹169 more
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Price Breakdown Bar -->
-                    <div class="tier-breakdown-bar" id="breakdown-tier-50">
-                        <span>Base Plan: <strong>₹636/mo</strong> + GST (No OTTs)</span>
-                    </div>
-
-                    <!-- Footer Action -->
-                    <div class="plan-card-footer">
-                        <a href="https://ucnsmart.com/?connect=1&source=qr" target="_blank" class="tier-cta-btn" id="cta-tier-50">
-                            <span id="cta-text-tier-50">Select Base Plan (₹636/mo)</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- PLAN 2: 100 Mbps Tier (Featured Most Popular) -->
-                <div class="smart-plan-card popular-card has-ott-active" id="card-tier-100">
-                    <div class="tier-card-badge-wrap">
-                        <span class="tier-badge badge-popular" id="badge-tier-100">
-                            <i class="fa-solid fa-star me-1"></i> MOST POPULAR • BEST VALUE
-                        </span>
-                    </div>
-
-                    <div class="tier-card-header">
-                        <div class="tier-speed-pill">
-                            <i class="fa-solid fa-gauge-high"></i>
-                            <span>100 Mbps</span>
-                        </div>
-                        <div class="tier-price-box">
-                            <span class="tier-price-curr">₹</span>
-                            <span class="tier-price-val" id="price-val-tier-100">932</span>
-                            <span class="tier-price-cycle">/-month</span>
-                        </div>
-                    </div>
-
-                    <h3 class="tier-plan-title" id="title-tier-100">100 Mbps Wi-Fi + Satellite Channels + OTT</h3>
-                    <p class="plan-desc">Ultra-fast fiber designed for bufferless 4K streaming, multi-device homes & full OTT binge-watching.</p>
-
-                    <!-- Base Inclusions -->
-                    <div class="tier-base-inclusions">
-                        <div class="inclusions-heading">
-                            <i class="fa-solid fa-circle-check"></i>
-                            <span>BASE PLAN INCLUDES:</span>
-                        </div>
-                        <ul class="inclusions-list">
-                            <li><i class="fa-solid fa-check"></i> <span>100 Mbps Ultra-Fast Fiber Internet</span></li>
-                            <li><i class="fa-solid fa-check"></i> <span>400+ Live Satellite Channels in HD</span></li>
-                            <li><i class="fa-solid fa-check"></i> <span>4K Ultra HD & Multi-Device Streaming</span></li>
-                            <li><i class="fa-solid fa-check"></i> <span>Free Dual-Band Wi-Fi Router & Setup</span></li>
-                            <li><i class="fa-solid fa-check"></i> <span>100% Boxless TV (Direct Smart TV App)</span></li>
-                        </ul>
-                    </div>
-
-                    <!-- Interactive OTT Add-on Box (Active by default) -->
-                    <div class="tier-ott-addon-box addon-selected" 
-                         id="addon-box-tier-100" 
-                         onclick="togglePlanTier('tier-100')"
-                         role="button"
-                         tabindex="0"
-                         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();togglePlanTier('tier-100');}"
-                         aria-label="Add 25+ Premium OTT Apps for ₹169 per month">
+                        // By default, second tier or tier with popular badge starts with OTT active
+                        $isPopular = ($index === 1) || (isset($plan['badges']['bundle']) && str_contains(strtoupper($plan['badges']['bundle']), 'POPULAR'));
+                        $hasOtt = $isPopular;
+                        $currentPrice = $hasOtt ? $priceBundle : $priceBase;
+                        $currentTitle = $hasOtt ? $bundleName : $baseName;
                         
-                        <div class="addon-header-row">
-                            <div class="addon-title-group">
-                                <div class="addon-checkbox-custom checked" id="addon-check-tier-100">
-                                    <i class="fa-solid fa-check"></i>
-                                </div>
-                                <div class="addon-title-text">
-                                    <span class="addon-main-title">Add 25+ Premium OTT Apps</span>
-                                    <span class="addon-subtitle">Netflix, Hotstar, ZEE5, Sony LIV & more</span>
-                                </div>
-                            </div>
-                            <div class="addon-price-badge badge-added" id="addon-badge-tier-100">✓ ADDED (+₹169)</div>
+                        $ottApps = $plan['otts']['apps'] ?? [];
+                        $ottCount = $plan['otts']['count'] ?? (count($ottApps) > 0 ? count($ottApps) : 25);
+                        $previewOtts = array_slice($ottApps, 0, 4);
+
+                        $features = $plan['features'] ?? [];
+                        $extraPerks = [
+                            'Free Dual-Band Wi-Fi Router & Setup',
+                            '100% Boxless TV (No Set-Top Box Needed)',
+                            '1 Smart TV + Mobile App Access'
+                        ];
+                        foreach ($extraPerks as $perk) {
+                            if (count($features) >= 5) break;
+                            $keyword = explode(' ', $perk)[1] ?? $perk;
+                            $found = false;
+                            foreach ($features as $f) {
+                                if (stripos($f, $keyword) !== false) {
+                                    $found = true;
+                                    break;
+                                }
+                            }
+                            if (!$found) {
+                                $features[] = $perk;
+                            }
+                        }
+                    @endphp
+
+                    <div class="smart-plan-card {{ $isPopular ? 'popular-card' : '' }} {{ $hasOtt ? 'has-ott-active' : '' }}" id="card-{{ $slug }}">
+                        <div class="tier-card-badge-wrap">
+                            @if($hasOtt)
+                                <span class="tier-badge badge-popular" id="badge-{{ $slug }}">
+                                    <i class="fa-solid fa-star me-1"></i> {{ $badgeBundle }}
+                                </span>
+                            @else
+                                <span class="tier-badge badge-base" id="badge-{{ $slug }}">{{ $badgeBase }}</span>
+                            @endif
                         </div>
 
-                        <div class="addon-ott-preview">
-                            <div class="plan-ott-circles-stack active-otts" id="ott-circles-tier-100">
-                                <div class="ott-circle-avatar" title="Netflix">
-                                    <img src="{{ asset('asset/images/iptv/otts/netflix.png') }}" alt="Netflix" loading="lazy">
-                                </div>
-                                <div class="ott-circle-avatar" title="JioHotstar">
-                                    <img src="{{ asset('asset/images/iptv/otts/jiohotstar.png') }}" alt="JioHotstar" loading="lazy">
-                                </div>
-                                <div class="ott-circle-avatar" title="ZEE5">
-                                    <img src="{{ asset('asset/images/iptv/otts/z5.webp') }}" alt="ZEE5" loading="lazy">
-                                </div>
-                                <div class="ott-circle-avatar" title="Sony LIV">
-                                    <img src="{{ asset('asset/images/iptv/otts/sonylive.webp') }}" alt="Sony LIV" loading="lazy">
-                                </div>
-                                <div class="ott-circle-avatar plus-circle" title="25+ OTT Apps">
-                                    <span>25+</span>
-                                </div>
+                        <div class="tier-card-header">
+                            <div class="tier-speed-pill">
+                                <i class="fa-solid fa-gauge-high"></i>
+                                <span>{{ $speedDisplay }}</span>
                             </div>
-                            <div class="addon-status-text active" id="addon-status-tier-100">
-                                Full OTT Bundle Unlocked (25+ Apps)
+                            <div class="tier-price-box">
+                                <span class="tier-price-curr">₹</span>
+                                <span class="tier-price-val" id="price-val-{{ $slug }}">{{ $currentPrice }}</span>
+                                <span class="tier-price-cycle">/-month</span>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Price Breakdown Bar -->
-                    <div class="tier-breakdown-bar" id="breakdown-tier-100">
-                        <span>₹763 Base + ₹169 OTT = <strong>₹932/mo</strong> + GST</span>
-                    </div>
+                        <h3 class="tier-plan-title" id="title-{{ $slug }}">{{ $currentTitle }}</h3>
+                        <p class="plan-desc">
+                            @if($index === 0)
+                                Unlimited high-speed fiber paired with live satellite entertainment for everyday family enjoyment.
+                            @else
+                                Ultra-fast fiber designed for bufferless 4K streaming, multi-device homes & full OTT binge-watching.
+                            @endif
+                        </p>
 
-                    <!-- Footer Action -->
-                    <div class="plan-card-footer">
-                        <a href="https://ucnsmart.com/?connect=1&source=qr" target="_blank" class="tier-cta-btn btn-bundle-active" id="cta-tier-100">
-                            <span id="cta-text-tier-100">Subscribe with OTTs (₹932/mo)</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
+                        <!-- Base Inclusions -->
+                        <div class="tier-base-inclusions">
+                            <div class="inclusions-heading">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>BASE PLAN INCLUDES:</span>
+                            </div>
+                            <ul class="inclusions-list">
+                                @foreach($features as $feature)
+                                    <li><i class="fa-solid fa-check"></i> <span>{{ $feature }}</span></li>
+                                @endforeach
+                            </ul>
+                        </div>
 
+                        <!-- Interactive OTT Add-on Box -->
+                        <div class="tier-ott-addon-box {{ $hasOtt ? 'addon-selected' : '' }}" 
+                             id="addon-box-{{ $slug }}" 
+                             onclick="togglePlanTier('{{ $slug }}')"
+                             role="button"
+                             tabindex="0"
+                             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();togglePlanTier('{{ $slug }}');}"
+                             aria-label="Add {{ $ottCount }}+ Premium OTT Apps for ₹{{ $priceAddon }} per month">
+                            
+                            <div class="addon-header-row">
+                                <div class="addon-title-group">
+                                    <div class="addon-checkbox-custom {{ $hasOtt ? 'checked' : '' }}" id="addon-check-{{ $slug }}">
+                                        <i class="fa-solid fa-check"></i>
+                                    </div>
+                                    <div class="addon-title-text">
+                                        <span class="addon-main-title">Add 25+ Premium OTT Apps</span>
+                                        <span class="addon-subtitle">Netflix, Hotstar, ZEE5, Sony LIV & more</span>
+                                    </div>
+                                </div>
+                                <div class="addon-price-badge {{ $hasOtt ? 'badge-added' : '' }}" id="addon-badge-{{ $slug }}">
+                                    {{ $hasOtt ? '✓ ADDED (+₹' . $priceAddon . ')' : '+₹' . $priceAddon . '/mo' }}
+                                </div>
+                            </div>
+
+                            <div class="addon-ott-preview">
+                                <div class="plan-ott-circles-stack {{ $hasOtt ? 'active-otts' : '' }}" id="ott-circles-{{ $slug }}">
+                                    @foreach($previewOtts as $app)
+                                        @php
+                                            $appName = pathinfo($app['filename'] ?? '', PATHINFO_FILENAME);
+                                            $fallbackLocal = asset('asset/images/iptv/otts/' . ($app['filename'] ?? 'netflix.webp'));
+                                            $iconUrl = !empty($app['icon_url']) ? $app['icon_url'] : $fallbackLocal;
+                                        @endphp
+                                        <div class="ott-circle-avatar" title="{{ ucfirst($appName) }}">
+                                            <img src="{{ $iconUrl }}" alt="{{ $appName }}" loading="lazy" onerror="this.src='{{ $fallbackLocal }}'">
+                                        </div>
+                                    @endforeach
+                                    <div class="ott-circle-avatar plus-circle" title="25+ OTT Apps">
+                                        <span>25+</span>
+                                    </div>
+                                </div>
+                                <div class="addon-status-text {{ $hasOtt ? 'active' : '' }}" id="addon-status-{{ $slug }}">
+                                    {{ $hasOtt ? 'Full OTT Bundle Unlocked (25+ Apps)' : 'Tap to include 25+ OTTs for only ₹' . $priceAddon . ' more' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Price Breakdown Bar -->
+                        <div class="tier-breakdown-bar" id="breakdown-{{ $slug }}">
+                            @if($hasOtt)
+                                <span>₹{{ $priceBase }} Base + ₹{{ $priceAddon }} OTT = <strong>₹{{ $priceBundle }}/mo</strong> + GST</span>
+                            @else
+                                <span>Base Plan: <strong>₹{{ $priceBase }}/mo</strong> + GST (No OTTs)</span>
+                            @endif
+                        </div>
+
+                        <!-- Footer Action -->
+                        <div class="plan-card-footer">
+                            <a href="https://ucnsmart.com/?connect=1&source=qr" target="_blank" class="tier-cta-btn {{ $hasOtt ? 'btn-bundle-active' : '' }}" id="cta-{{ $slug }}">
+                                <span id="cta-text-{{ $slug }}">
+                                    {{ $hasOtt ? 'Subscribe with OTTs (₹' . $priceBundle . '/mo)' : 'Select Base Plan (₹' . $priceBase . '/mo)' }}
+                                </span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
             </div>
 
             <!-- Bottom UCN Smart Switch / Portal Banner -->
@@ -260,28 +220,30 @@
 <!-- Interactive Tier Toggle JavaScript -->
 <script>
     const planTiersData = {
-        'tier-50': {
-            id: 'tier-50',
-            priceBase: 636,
-            priceAddon: 169,
-            priceBundle: 805,
-            baseName: '50 Mbps Wi-Fi + Satellite Channels',
-            bundleName: '50 Mbps Wi-Fi + Satellite Channels + OTT',
-            badgeBase: 'BASE PLAN',
-            badgeBundle: 'MOST POPULAR • BEST VALUE',
-            hasOtt: false
-        },
-        'tier-100': {
-            id: 'tier-100',
-            priceBase: 763,
-            priceAddon: 169,
-            priceBundle: 932,
-            baseName: '100 Mbps Wi-Fi + Satellite Channels',
-            bundleName: '100 Mbps Wi-Fi + Satellite Channels + OTT',
-            badgeBase: 'PRO FIBER',
-            badgeBundle: 'MOST POPULAR • BEST VALUE',
-            hasOtt: true
-        }
+        @foreach($plans as $index => $plan)
+            @php
+                $slug = $plan['slug'] ?? ('tier-' . ($plan['speed'] ?? ($index + 1)));
+                $priceBase = (int)($plan['pricing']['base_monthly'] ?? 0);
+                $priceAddon = (int)($plan['pricing']['addon_monthly'] ?? 169);
+                $priceBundle = (int)($plan['pricing']['bundle_monthly'] ?? ($priceBase + $priceAddon));
+                $baseName = $plan['base_name'] ?? (($plan['speed_display'] ?? '') . ' Wi-Fi + Satellite Channels');
+                $bundleName = $plan['bundle_name'] ?? (($plan['speed_display'] ?? '') . ' Wi-Fi + Satellite Channels + OTT');
+                $badgeBase = $plan['badges']['base'] ?? 'BASE PLAN';
+                $badgeBundle = $plan['badges']['bundle'] ?? 'MOST POPULAR • BEST VALUE';
+                $isPopular = ($index === 1) || (isset($plan['badges']['bundle']) && str_contains(strtoupper($plan['badges']['bundle']), 'POPULAR'));
+            @endphp
+            '{{ $slug }}': {
+                id: '{{ $slug }}',
+                priceBase: {{ $priceBase }},
+                priceAddon: {{ $priceAddon }},
+                priceBundle: {{ $priceBundle }},
+                baseName: {!! json_encode($baseName) !!},
+                bundleName: {!! json_encode($bundleName) !!},
+                badgeBase: {!! json_encode($badgeBase) !!},
+                badgeBundle: {!! json_encode($badgeBundle) !!},
+                hasOtt: {{ $isPopular ? 'true' : 'false' }}
+            },
+        @endforeach
     };
 
     function togglePlanTier(tierId) {
