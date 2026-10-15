@@ -42,7 +42,7 @@ Route::get('/find-lco', function () {
 })->name('find_lco');
 
 Route::get('/new-connection', function () {
-    return view('frontend.header-actions.new_connection');
+    return redirect('/?connect=1&source=qr');
 })->name('new_connection');
 
 Route::get('/recharge', function () {

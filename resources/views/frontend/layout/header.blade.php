@@ -720,13 +720,26 @@
 
 <script>
     function openNewConnectionModal() {
-        document.getElementById('newConnectionModal').classList.add('active');
-        document.body.style.overflow = 'hidden';
+        const modal = document.getElementById('newConnectionModal');
+        if (modal) {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
     }
 
     function closeNewConnectionModal() {
-        document.getElementById('newConnectionModal').classList.remove('active');
-        document.body.style.overflow = 'auto';
+        const modal = document.getElementById('newConnectionModal');
+        if (modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        // Clean URL parameters or hash from address bar cleanly without page reload
+        if (window.location.search.includes('connect=1') || 
+            window.location.search.includes('new-connection') || 
+            window.location.hash === '#new-connection') {
+            const cleanUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+        }
     }
 
     window.onclick = function(event) {
@@ -735,6 +748,17 @@
             closeNewConnectionModal();
         }
     }
+
+    // Auto-open modal on page load if URL has ?connect=1, ?new-connection, or #new-connection
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('connect') === '1' || 
+            urlParams.has('new-connection') || 
+            urlParams.get('modal') === 'new-connection' || 
+            window.location.hash === '#new-connection') {
+            setTimeout(openNewConnectionModal, 150);
+        }
+    });
 </script>
 
 <style>
